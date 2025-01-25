@@ -1,0 +1,86 @@
+---
+title: "BASIC ANOVA TEST"
+author: "DORIS BENIG"
+date: "2025-01-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+git init
+git remote add origin https://github.com/D4Benig/Stats-R.git
+git branch -M main
+git add .
+git commit -m "Initial commit"
+git push -u origin main
+
+```
+
+
+Does the type of treatment significantly affect the weight of plants?
+
+Hypothesis:
+
+Null Hypothesis $H_0$: The type of treatment does not have a significant effect on the weight of plants.
+Alternative Hypothesis $H_1$: The type of treatment has a significant effect on the weight of plants.
+
+# Step 1: Load the necessary libraries 
+
+```{r}
+# Data Wrangling libraries 
+
+library(tidyverse)
+library(dplyr)
+```
+
+# Step 2: Load and explore the datasete
+
+```{r}
+# Load the dataset
+PlantGrowth
+str(PlantGrowth) #This is an R inbuilt dataset
+```
+The PlantGrowth dataset has 2 variables (weight and group). weight is a numerical variable and group is a factor variable with 3 levels/categories. There are 30 observations in this dataset.  
+
+# Step 3: Visualize the distribution 
+
+The aim is to test if the average weights of plants in the 3 treatment groups are equal or not. 
+So, the x-variable is 'group', the categorical variable, and the y-variable is 'weight', the numerical variable. 
+Since there is a categorical variable and a numerical variable, visualize the distribution of these variables using a boxplot.
+
+```{r}
+ggplot(PlantGrowth, aes(x = group, y = weight))+
+  geom_boxplot()+
+  labs(title = "Distribution of plant weight ",
+       x = "Treatment Groups",
+       y = "Plant Weight")
+```
+Plants treated with Treatment2 has a higher mean weight compared to plants treated with Treatment1 and the Control group. 
+
+# Step 4: Run the ANOVA test
+
+```{r}
+summary(aov(PlantGrowth$weight~PlantGrowth$group))
+
+qf(0.95, df1 = 2, df2 = 27)  # 0.95 = 1 - alpha
+qf(0.99, df1 = 2, df2 = 27)  # 0.95 = 1 - alpha
+
+
+```
+
+
+# Step 5: Interpretation of ANOVA test result 
+
+Suppose $\alpha = 0.01$ , fail to reject the null hypothesis as the p-value from the ANOVA test is 0.0159
+The F (2,27) statistic, 4.846 < 5.488118.
+There isn't sufficient evidence to conclude that the mean plant weights from the 3 treatment groups are different at 1% significance level. 
+
+
+Suppose $\alpha = 0.05$ then reject the null hypothesis as the p-value from the ANOVA test is 0.0159 is < 0.05
+The F (2,27) statistic, 4.846 > 3.354131 
+There is evidence to conclude that the mean plant weights from the 3 treatment groups are different at 5% significance level. 
+
+
